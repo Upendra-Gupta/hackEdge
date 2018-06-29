@@ -80,6 +80,7 @@ export class HomePage {
   }
 
   addEvent() {
+  
     this.navCtrl.push(AddEventPage);
   }
 

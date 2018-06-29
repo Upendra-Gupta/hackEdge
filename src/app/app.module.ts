@@ -5,13 +5,16 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Calendar } from '@ionic-native/calendar';
 import { MyApp } from './app.component';
+import { LoginPage } from '../pages/login/login';
 import { HomePage } from '../pages/home/home';
 import { AddEventPage } from '../pages/add-event/add-event';
 import { EditEventPage } from '../pages/edit-event/edit-event';
 
+
 @NgModule({
   declarations: [
     MyApp,
+    LoginPage,
     HomePage,
     AddEventPage,
     EditEventPage
@@ -23,6 +26,7 @@ import { EditEventPage } from '../pages/edit-event/edit-event';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
+    LoginPage,
     HomePage,
     AddEventPage,
     EditEventPage

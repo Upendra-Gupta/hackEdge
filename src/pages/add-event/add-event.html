@@ -7,23 +7,50 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Add Event</ion-title>
+    <ion-title>Settings</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content padding>
+<ion-content padding>   
   <form (ngSubmit)="save()">
     <ion-list>
       <ion-item>
-        <ion-label floating>Title</ion-label>
-        <ion-input type="text" [(ngModel)]="event.title" name="event.title"></ion-input>
+        <ion-label>Location Preference</ion-label>
+        <ion-select [(ngModel)]="event.location" name="event.location" multiple="true">
+          <ion-option>Bengaluru</ion-option>
+          <ion-option>New Delhi</ion-option>
+          <ion-option>Pune</ion-option>
+          <ion-option>Mushrooms</ion-option>
+          <ion-option>Pepperoni</ion-option>
+          <ion-option>Sausage</ion-option>
+        </ion-select>
       </ion-item>
+
       <ion-item>
-        <ion-label floating>Location</ion-label>
-        <ion-input type="text" [(ngModel)]="event.location" name="event.location"></ion-input>
+        <ion-label>Show companies in a best suited order.</ion-label>
+        <ion-toggle [(ngModel)]="event.showBestCompany" name="event.showBestCompany" checked="event.showBestCompany"></ion-toggle>
       </ion-item>
+      <ion-item *ngIf="event.showBestCompany">
+        <ion-label>Skills Preference</ion-label>
+        <ion-select [(ngModel)]="event.skills" name="event.skills" multiple="true">
+          <ion-option>Java</ion-option>
+          <ion-option>PHP</ion-option>
+          <ion-option>C++</ion-option>
+          <ion-option>C</ion-option>
+          <ion-option>AngularJs</ion-option>
+          <ion-option>NodeJs</ion-option>
+        </ion-select>
+      </ion-item>
+
+        
+      <ion-item>
+        <ion-label>Show notifications for the upcoming interviews.</ion-label>
+        <ion-toggle enabled checked="true"></ion-toggle>
+      </ion-item>
+
+      
       <ion-item>
         <ion-label floating>Notes</ion-label>
         <ion-input type="text" [(ngModel)]="event.message" name="event.message"></ion-input>
@@ -37,7 +64,7 @@
         <ion-datetime displayFormat="DD MMM YYYY" pickerFormat="MM/DD/YYYY" [(ngModel)]="event.endDate" name="event.endDate"></ion-datetime>
       </ion-item>
       <ion-item>
-        <button ion-button type="submit" full round>Save</button>
+        <button ion-button type="submit" full round>Next</button>
       </ion-item>
     </ion-list>
   </form>

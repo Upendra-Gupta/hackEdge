@@ -21,6 +21,7 @@ export class HomePage {
   eventList: any;
   selectedEvent: any;
   isSelected: any;
+  isSelectedDate: any;
 
   constructor(private alertCtrl: AlertController,
     public navCtrl: NavController,
@@ -114,15 +115,23 @@ export class HomePage {
 
   selectDate(day) {
     this.isSelected = false;
-    this.selectedEvent = new Array();
     var thisDate1 = this.date.getFullYear()+"-"+(this.date.getMonth()+1)+"-"+day+" 00:00:00";
     var thisDate2 = this.date.getFullYear()+"-"+(this.date.getMonth()+1)+"-"+day+" 23:59:59";
-    this.eventList.forEach(event => {
-      if(((event.startDate >= thisDate1) && (event.startDate <= thisDate2)) || ((event.endDate >= thisDate1) && (event.endDate <= thisDate2))) {
+   
+    var eEvent = {
+        title:"Hellloooo",
+        message:"Bye Bye...",
+        startDate: thisDate1,
+        endDate: thisDate2
+    };
+    this.selectedEvent = new Array();
+    //this.eventList.forEach(event => {
+    //  if(((event.startDate >= thisDate1) && (event.startDate <= thisDate2)) || ((event.endDate >= thisDate1) && (event.endDate <= thisDate2))) {
         this.isSelected = true;
-        this.selectedEvent.push(event);
-      }
-    });
+        this.isSelectedDate=day;
+        this.selectedEvent.push(eEvent);
+      //}
+    //});
   }
 
   deleteEvent(evt) {

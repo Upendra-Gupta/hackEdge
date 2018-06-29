@@ -23,7 +23,7 @@ export class AddEventPage {
 
   save() {
     
-    this.calendar.createEvent(this.event.location, this.event.title, this.event.location, this.event.message, new Date(this.event.startDate), new Date(this.event.endDate)).then(
+    this.calendar.createEvent(this.event.location, this.event.message, this.event.startDate, new Date(this.event.endDate)).then(
         
       (msg) => {
         let alert = this.alertCtrl.create({
@@ -44,5 +44,6 @@ export class AddEventPage {
       }
     );
   }
+  
 
 }

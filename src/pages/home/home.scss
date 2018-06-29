@@ -15,12 +15,18 @@ page-home {
     color: #999999;
     font-size: 90%;
   }
-  .currentDate, .otherDate {
+  .currentDate, .otherDate, .selectedDate {
     padding: 5px;
   }
   .currentDate {
     font-weight: bold;
     background-color: red;
+    color: white;
+    border-radius: 30px;
+  }
+  .selectedDate {
+    font-weight: bold;
+    background-color: greenyellow;
     color: white;
     border-radius: 30px;
   }

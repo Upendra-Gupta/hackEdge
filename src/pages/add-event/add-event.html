@@ -13,26 +13,34 @@
 </ion-header>
 
 
-<ion-content padding>   
-  <form (ngSubmit)="save()">
+<ion-content padding>  
+    
+  <form>
     <ion-list>
-      <ion-item>
+<!--      <ion-item>
         <ion-label>Location Preference</ion-label>
         <ion-select [(ngModel)]="event.location" name="event.location" multiple="true">
           <ion-option>Bengaluru</ion-option>
           <ion-option>New Delhi</ion-option>
           <ion-option>Pune</ion-option>
-          <ion-option>Mushrooms</ion-option>
-          <ion-option>Pepperoni</ion-option>
-          <ion-option>Sausage</ion-option>
+          <ion-option>Gurgaon</ion-option>
+          <ion-option>Noida</ion-option>
+          
         </ion-select>
+      </ion-item>-->
+      <ion-item>
+          <ion-label>Location Preference</ion-label>
+          <ion-select [(ngModel)]="user.LocationPreference" name="user.LocationPreference" multiple="true" (ionChange)="selectLocation($event)">
+               <ion-option *ngFor="let location of locations" value="{{location}}">{{location}}</ion-option>
+          </ion-select>
+       
       </ion-item>
 
       <ion-item>
         <ion-label>Show companies in a best suited order.</ion-label>
-        <ion-toggle [(ngModel)]="event.showBestCompany" name="event.showBestCompany" checked="event.showBestCompany"></ion-toggle>
+        <ion-toggle [(ngModel)]="user.ShowBestCompany" name="user.ShowBestCompany" checked="user.ShowBestCompany" (ionChange)="setShowBestCompany($event)"></ion-toggle>
       </ion-item>
-      <ion-item *ngIf="event.showBestCompany">
+<!--      <ion-item *ngIf="event.ShowBestCompany">
         <ion-label>Skills Preference</ion-label>
         <ion-select [(ngModel)]="event.skills" name="event.skills" multiple="true">
           <ion-option>Java</ion-option>
@@ -42,29 +50,28 @@
           <ion-option>AngularJs</ion-option>
           <ion-option>NodeJs</ion-option>
         </ion-select>
+      </ion-item>-->
+        
+      <ion-item *ngIf="user.ShowBestCompany">
+          <ion-label>Skills Preference</ion-label>
+          <ion-select [(ngModel)]="user.PreferredSkills" name="user.PreferredSkills" multiple="true" (ionChange)="selectSkills($event)">
+               <ion-option *ngFor="let skill of user.Skills" value="{{skill}}">{{skill}}</ion-option>
+          </ion-select>
+       
       </ion-item>
      
       <ion-item>
-        <ion-label>Show notifications for the upcoming interviews.</ion-label>
-        <ion-toggle enabled checked="true"></ion-toggle>
+        <ion-label>Show notifications for the upcoming walkins.</ion-label>
+        <ion-toggle enabled checked={{user.NotificationForUpcomingWalkins}} (ionChange)="setNotificationForUpcomingWalkins($event)"></ion-toggle>
+      </ion-item>
+        
+      <ion-item>
+        <ion-label>Show your upcoming scheduled interviews.</ion-label>
+        <ion-toggle enabled checked={{user.UpcomingScheduledInterviews}} (ionChange)="setUpcomingScheduledInterviews($event)"></ion-toggle>
       </ion-item>
 
       
-      <ion-item>
-        <ion-label floating>Notes</ion-label>
-        <ion-input type="text" [(ngModel)]="event.message" name="event.message"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label floating>Start Date</ion-label>
-        <ion-datetime displayFormat="DD MMM YYYY" pickerFormat="MM/DD/YYYY" [(ngModel)]="event.startDate" name="event.startDate"></ion-datetime>
-      </ion-item>
-      <ion-item>
-        <ion-label floating>End Date</ion-label>
-        <ion-datetime displayFormat="DD MMM YYYY" pickerFormat="MM/DD/YYYY" [(ngModel)]="event.endDate" name="event.endDate"></ion-datetime>
-      </ion-item>
-      <ion-item>
-        <button ion-button type="submit" full round>Next</button>
-      </ion-item>
     </ion-list>
   </form>
 </ion-content>
+

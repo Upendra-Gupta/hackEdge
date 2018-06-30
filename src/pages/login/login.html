@@ -16,13 +16,16 @@
 <ion-content padding>
 
 </ion-content>-->
-<ion-header>
+<!--<ion-header>
  <ion-navbar>
-   <ion-title>login</ion-title>
+   <ion-title>Naukri Walkins</ion-title>
  </ion-navbar>
 </ion-header>
- 
+ -->
 <ion-content padding>
+    
+    <ion-img style="align-items: center;width: 80px; height: 80px;" src="../../assets/imgs/naukri-logo.png"></ion-img>
+    <ion-title text-center ion-text>Naukri Walkins</ion-title>
  <ion-list>
    <ion-item>
      <ion-label floating>Username</ion-label>
@@ -34,8 +37,13 @@
    </ion-item>
  </ion-list>
  
- <div padding>
+<!-- <div padding>
    <button ion-button block (click)="signin()">Sign In</button>
    
- </div>
+ </div>-->
 </ion-content>
+<ion-footer>
+    <ion-toolbar>
+        <button ion-button block (click)="signin()">Sign In</button>
+    </ion-toolbar>
+</ion-footer> 

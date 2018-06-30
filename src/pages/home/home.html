@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Naukri Walkin Calendar
+      
     </ion-title>
     <ion-buttons end>
       <button ion-button icon-only (click)="addEvent()">
@@ -11,7 +11,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
   <div class="calendar-header">
     <ion-row class="calendar-month">
       <ion-col col-2 (click)="goToLastMonth()"><ion-icon name="arrow-back"></ion-icon></ion-col>
@@ -48,16 +48,40 @@
   </div>
   <div class="selected-event" *ngIf="isSelected">
     <ion-list>
-      <ion-item *ngFor="let se of selectedEvent">
-        <ion-buttons end>
+      <ion-item *ngFor="let se of selectedEvent" (click)="selectWalkin(se)">
+<!--        <ion-buttons end>
           <button ion-button clear icon-only (click)="deleteEvent(se)">
             <ion-icon name="close"></ion-icon>
           </button>
         </ion-buttons>
-        <h2>{{se.title}}</h2>
-        <h3>{{se.message}}</h3>
-        <p>Start Date: {{se.startDate}}<br>
-        Start Date: {{se.endDate}}</p>
+        -->
+      
+        <ion-grid>
+            <ion-row>
+                <div>
+                    <ion-icon style="color: red;font-size: 36px;padding:0px" name="md-arrow-dropright"></ion-icon>
+                </div>
+              <ion-col style="text-align: left;">
+                  
+                  
+               <h2>{{se.Title}}</h2>
+               <h3>{{se.Message}}</h3>
+              </ion-col>
+              <ion-col style="text-align: right;">
+                  <p>
+                      <ion-icon name="md-bicycle"></ion-icon>
+                      {{se.ETA}}
+                  </p>
+                  
+                
+                <p>
+                    <ion-icon name="md-pricetag"></ion-icon>
+                    {{se.Salary}}</p>
+              </ion-col>
+           </ion-row>
+        </ion-grid>
+
+
       </ion-item>
     </ion-list>
   </div>

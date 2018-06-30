@@ -2,23 +2,33 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { Calendar } from '@ionic-native/calendar';
 
+
+// import the class from the service
+import { JdDataProvider } from '../../providers/jd-data/jd-data';
+
+
 @IonicPage()
 @Component({
   selector: 'page-add-event',
-  templateUrl: 'add-event.html',
+  templateUrl: 'add-event.html'
+  
 })
 export class AddEventPage {
 
-  event = { title: "", location: "", message: "", startDate: "", endDate: "" };
+  user: any;
+  event = { title: "", location: [], message: "", startDate: "", endDate: "" };
 
-  constructor(public alertCtrl: AlertController,
+  constructor(public jdDataProvider: JdDataProvider, public alertCtrl: AlertController,
     public navCtrl: NavController,
     public navParams: NavParams,
     private calendar: Calendar) {
+    this.user = this.jdDataProvider.getUser();
+    this.locations = this.jdDataProvider.getLocation();
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad AddEventPage');
+    
   }
 
   save() {
@@ -44,6 +54,26 @@ export class AddEventPage {
       }
     );
   }
-  
+  selectLocation(location){
+    
+    console.log("HERRRRRRRRRRRRRRRRRRRRrrrrrre");
+    this.jdDataProvider.setPreferredLocation(location);
+    
+  }
+  selectSkills(skill){
+    
+    console.log("HERRRRRRRRRRRRRRRRRRRRrrrrrre");
+    this.jdDataProvider.setPreferredSkills(skill);
+    
+  }
+  setShowBestCompany(bVal){
+    this.jdDataProvider.setShowBestCompany(bVal._activated);
+  }
+  setNotificationForUpcomingWalkins(bVal){
+    this.jdDataProvider.setNotificationForUpcomingWalkins(!bVal._activated);
+  }
+  setUpcomingScheduledInterviews(bVal){
+    this.jdDataProvider.setUpcomingScheduledInterviews(!bVal._activated);
+  }
 
 }

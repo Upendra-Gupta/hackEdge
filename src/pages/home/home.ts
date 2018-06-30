@@ -3,10 +3,16 @@ import { NavController, AlertController } from 'ionic-angular';
 import { AddEventPage } from '../add-event/add-event';
 import { EditEventPage } from '../edit-event/edit-event';
 import { Calendar } from '@ionic-native/calendar';
+import { JdPage } from '../jd/jd';
+
+
+// import the class from the service
+import { JdDataProvider } from '../../providers/jd-data/jd-data';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
+  
 })
 export class HomePage {
 
@@ -22,16 +28,27 @@ export class HomePage {
   selectedEvent: any;
   isSelected: any;
   isSelectedDate: any;
+  selectedDay: any;
 
-  constructor(private alertCtrl: AlertController,
+    selectedJobId: any;
+
+  constructor(public jdDataProvider: JdDataProvider, private alertCtrl: AlertController,
     public navCtrl: NavController,
-    private calendar: Calendar) {}
+    private calendar: Calendar) {
+    this.selectedJobId="Helllllllllllllllllllllllllllllllllllllllllllllllllll";
+        
+        
+    }
 
   ionViewWillEnter() {
     this.date = new Date();
     this.monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
     this.getDaysOfMonth();
     this.loadEventThisMonth();
+    this.selectedDay = new Array();
+        this.selectedEvent = new Array();
+        this.isSelected = true;
+       this.selectWalkinsForMonth();
   }
 
   getDaysOfMonth() {
@@ -110,30 +127,114 @@ export class HomePage {
         hasEvent = true;
       }
     });
-    return hasEvent;
+    return true;
   }
+  filterItems(items){
+        var oUser = this.jdDataProvider.getUser();
+        var aFilters = oUser.Skills;
+        var aPreferredFilters = oUser.PreferredSkills;
+        var oFilterWalkins = new Array();
+        if(oUser.ShowBestCompany === "true" || oUser.ShowBestCompany === true){
+            var aFilterSkills = new Array();
+            var aPreferredSkillFilters = new Array();
+            aFilters.forEach(skil => {
+                aFilterSkills[skil.toLowerCase()] = 1;
+            });
+            aPreferredFilters.forEach(skil => {
+                aPreferredSkillFilters[skil.toLowerCase()] = 1;
+            });
 
-  selectDate(day) {
+            
+            items.filter((item) => {
+                 var aSkills = item.skills.split(",");
+                 item.count = 0;
+                 item.preferredCount = 0;
+                 aSkills.forEach(skil => {
+                    if(aFilterSkills[skil.toLowerCase()]){
+                       item.count += 1;
+                    }
+                    if(aPreferredSkillFilters[skil.toLowerCase()]){
+                        item.preferredCount += 1;
+                    }
+                 });
+                 if(item.count > 0){
+                    oFilterWalkins.push(item);
+                 }
+                 //item.title.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
+            });
+        } else {
+           oFilterWalkins = items;
+        }
+        var aFilterLocations = new Array();
+        var oLocationPreference = oUser.LocationPreference;
+        oLocationPreference.forEach(loc => {
+            aFilterLocations.push(loc.toLowerCase());
+        });
+        var oWalkins = new Array();
+        oFilterWalkins.filter((item) => {
+             var location = item.Location.toLowerCase();
+             
+             var count = 0;
+             aFilterLocations.forEach(loc => {
+                if(location.indexOf(loc.toLowerCase()) > -1){
+                   count = 1;
+                   //break;
+                }
+             });
+             if(count > 0){
+                oWalkins.push(item);
+             }
+        });
+        return oWalkins;
+ 
+  }
+  sortItems(aItems){
+    return aItems.sort(function(a, b){
+        return (a.preferredCount-b.preferredCount);
+    });
+  }
+  selectWalkinsForMonth(){
+    var len = Object.keys(this.jdDataProvider.getJd()).length;
+    var i = 0;
+    for(i = 1; i <= len; ++i){
+        this.selectDateHelper(i);
+    }
+  }
+  selectDateHelper(day) {
     this.isSelected = false;
-    var thisDate1 = this.date.getFullYear()+"-"+(this.date.getMonth()+1)+"-"+day+" 00:00:00";
-    var thisDate2 = this.date.getFullYear()+"-"+(this.date.getMonth()+1)+"-"+day+" 23:59:59";
-   
-    var eEvent = {
-        title:"Hellloooo",
-        message:"Bye Bye...",
-        startDate: thisDate1,
-        endDate: thisDate2
-    };
-    this.selectedEvent = new Array();
+    //var thisDate1 = this.date.getFullYear()+"-"+(this.date.getMonth()+1)+"-"+day+" 00:00:00";
+    //var thisDate2 = this.date.getFullYear()+"-"+(this.date.getMonth()+1)+"-"+day+" 23:59:59";
+    //debugger;
+    var aEvent = this.filterItems(this.jdDataProvider.getJd()[day]);
+    aEvent = this.sortItems(aEvent);
+    /*{
+        Title:"TCS Walkin",
+        Message:"Java Developers",
+        ETA: "20 mins away",
+        Location: "Sector 2, Noida",
+        Salary: "8-12 lpa"
+       
+    };*/
+    
     //this.eventList.forEach(event => {
     //  if(((event.startDate >= thisDate1) && (event.startDate <= thisDate2)) || ((event.endDate >= thisDate1) && (event.endDate <= thisDate2))) {
-        this.isSelected = true;
+        
         this.isSelectedDate=day;
-        this.selectedEvent.push(eEvent);
+        this.selectedDay[day] = aEvent;
       //}
     //});
   }
-
+  selectDate(day) {
+    //if(this.isSelected){
+        
+        this.isSelected = false;
+    //}
+    this.selectedEvent = this.selectedDay[day];
+  }
+  selectWalkin(walkin) {
+    
+    this.navCtrl.push(JdPage, {status: walkin});
+  }
   deleteEvent(evt) {
     // console.log(new Date(evt.startDate.replace(/\s/, 'T')));
     // console.log(new Date(evt.endDate.replace(/\s/, 'T')));

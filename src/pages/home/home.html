@@ -38,7 +38,9 @@
           <span class="currentDate" *ngIf="currentDate === day; else otherDate">{{day}}</span>
           <ng-template #otherDate class="otherDate">
             {{day}}<br>
-            <div class="event-bullet" *ngIf="checkEvent(day)"></div>
+            <div class="event-bullet" *ngIf="checkEvent(day) === 3"></div>
+            <div class="event-bullet" style="background: yellow;" *ngIf="checkEvent(day) === 2"></div>
+            <div class="event-bullet" style="background: red;" *ngIf="checkEvent(day) === 1"></div>
           </ng-template>
           </ng-template>
         </ion-col>
@@ -59,13 +61,21 @@
         <ion-grid>
             <ion-row>
                 <div>
-                    <ion-icon style="color: red;font-size: 36px;padding:0px" name="md-arrow-dropright"></ion-icon>
+                    <ion-icon *ngIf="getPreferenceColour(se) === 3" style="color: green;font-size: 36px;padding:0px" name="md-arrow-dropright"></ion-icon>
+                    <ion-icon *ngIf="getPreferenceColour(se) === 2" style="color: yellow;font-size: 36px;padding:0px" name="md-arrow-dropright"></ion-icon>
+                    <ion-icon *ngIf="getPreferenceColour(se) === 1" style="color: red;font-size: 36px;padding:0px" name="md-arrow-dropright"></ion-icon>
                 </div>
               <ion-col style="text-align: left;">
                   
                   
                <h2>{{se.Title}}</h2>
                <h3>{{se.Message}}</h3>
+              </ion-col>
+              <ion-col style="text-align: right;">
+                  <p>
+                      {{se.Rating}}
+                  </p>
+                
               </ion-col>
               <ion-col style="text-align: right;">
                   <p>

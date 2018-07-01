@@ -59,6 +59,15 @@
           </ion-select>
        
       </ion-item>
+      <ion-item *ngIf="user.ShowBestCompany">
+        <ion-label>Would prefer salary over skills.</ion-label>
+        <ion-toggle enabled checked={{user.PreferSalaryOverSkills}} (ionChange)="setPreferSalaryOverSkills($event)"></ion-toggle>
+      </ion-item>
+      
+      <ion-item *ngIf="user.PreferSalaryOverSkills">
+        <ion-label>How much?</ion-label>
+        <ion-range [(ngModel)]="user.SalaryPreference" name="user.SalaryPreference" color="danger" pin="true" (ionChange)="changeSalaryPreference($event)"></ion-range>
+      </ion-item>
      
       <ion-item>
         <ion-label>Show notifications for the upcoming walkins.</ion-label>

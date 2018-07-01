@@ -33,7 +33,7 @@ export class AddEventPage {
 
   save() {
     
-    this.calendar.createEvent(this.event.location, this.event.message, this.event.startDate, new Date(this.event.endDate)).then(
+    /*this.calendar.createEvent(this.event.location, this.event.message, this.event.startDate, new Date(this.event.endDate)).then(
         
       (msg) => {
         let alert = this.alertCtrl.create({
@@ -52,7 +52,7 @@ export class AddEventPage {
         });
         alert.present();
       }
-    );
+    );*/
   }
   selectLocation(location){
     
@@ -67,13 +67,19 @@ export class AddEventPage {
     
   }
   setShowBestCompany(bVal){
-    this.jdDataProvider.setShowBestCompany(bVal._activated);
+    this.jdDataProvider.setShowBestCompany(bVal.checked);
   }
   setNotificationForUpcomingWalkins(bVal){
-    this.jdDataProvider.setNotificationForUpcomingWalkins(!bVal._activated);
+    this.jdDataProvider.setNotificationForUpcomingWalkins(bVal.checked);
   }
   setUpcomingScheduledInterviews(bVal){
-    this.jdDataProvider.setUpcomingScheduledInterviews(!bVal._activated);
+    this.jdDataProvider.setUpcomingScheduledInterviews(bVal.checked);
   }
-
+  setPreferSalaryOverSkills(bVal){
+    this.jdDataProvider.setPreferSalaryOverSkills(bVal.checked);
+  }
+  changeSalaryPreference(iVal){
+    debugger;
+    this.jdDataProvider.setSalaryPreference(iVal.ratio * 100);
+  }
 }

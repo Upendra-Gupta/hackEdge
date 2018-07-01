@@ -15,7 +15,10 @@ export class JdDataProvider {
         "PreferredSkills" : ["PHP", "Javascript"],
         "NotificationForUpcomingWalkins": true,
         "UpcomingScheduledInterviews":true,
-        "ShowBestCompany":false
+        "ShowBestCompany":false,
+        "PreferSalaryOverSkills":false,
+        "CurrentCTC": "10 lpa",
+        "SalaryPreference": 0
     };
     
     jd: any = {
@@ -1473,5 +1476,12 @@ export class JdDataProvider {
   }
   setUpcomingScheduledInterviews(bVal){
     this.user["UpcomingScheduledInterviews"] = bVal;
+  }
+  setPreferSalaryOverSkills(bVal){
+    
+    this.user["PreferSalaryOverSkills"] = bVal;
+  }
+  setSalaryPreference(iVal){
+    this.user["SalaryPreference"] = iVal;
   }
 }

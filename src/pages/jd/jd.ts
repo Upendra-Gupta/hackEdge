@@ -15,14 +15,10 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'jd.html',
 })
 export class JdPage {
-
+  jd: any;
   constructor(public navCtrl: NavController, public navParams: NavParams) {
-      this.jd = this.navParams.get('status');
-      if (!this.navParams.get('status')) {
-        this.message = 'Have some ice cream =)';
-      } else {
-        this.message = 'Stop hogging all the ice cream =(';
-      }
+      this.jd = this.navParams.get('jd');
+      
       /*this.jd= {
         "Title":"TCS Walkin",
         "Message":"Java Developer",

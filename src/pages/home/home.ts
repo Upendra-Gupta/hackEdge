@@ -31,8 +31,9 @@ export class HomePage {
   selectedDay: any;
   isSettingClicked: any;
   ScheduleOn: any;
+  SchedulePreference: any;
 
-    selectedJobId: any;
+    
 
   constructor(public jdDataProvider: JdDataProvider, private alertCtrl: AlertController,
     public navCtrl: NavController,
@@ -205,23 +206,25 @@ export class HomePage {
    
     //CTCContribution = (CTCContribution * ((oMaxCTCUserCanGet - currentCTC)/currentCTC) * 1.09)/100;
     var iPreferredSkillsCount = oUser.PreferredSkills.length;
-    var iPreferredCount = this.getPreferredCount(oWalkin.skills, oUser.PreferredSkills);
+    var iPreferredCount = 0;
+    if(oUser.ShowBestCompany){
+        iPreferredCount = this.getPreferredCount(oWalkin.skills, oUser.PreferredSkills);
+    } else {
+        iPreferredCount = this.getPreferredCount(oWalkin.skills, oUser.Skills);
+        iPreferredSkillsCount = oUser.Skills.length;
+    }
     if(iPreferredCount !== 0){
-        if(iPreferredSkillsCount === 0) iPreferredSkillsCount = oUser.Skills.length;
-        if(iPreferredSkillsCount === 0){
-             SkillContribution = 0;
-        } else {
+        
             SkillContribution = SkillContribution * (iPreferredCount / iPreferredSkillsCount);
             var iConsideringSkillInWalkin = SkillContribution * (iPreferredCount / oWalkin.skills.replace(/ /g, '').split(",").length);
             if(SkillContribution < iConsideringSkillInWalkin){
                 SkillContribution = iConsideringSkillInWalkin;
-            }
-        }
+            }    
     } else {    
         SkillContribution = 0;
     }
     
-    return CTCContribution + SkillContribution;
+    return (oUser.Skills.length) > 0 ? (CTCContribution + SkillContribution) : 0;
   }
   getPreferenceColour(oWalkin){
     var TotalContribution = this.calculatePreference(oWalkin);
@@ -379,7 +382,7 @@ export class HomePage {
         
         if(day <= Object.keys(this.selectedDay).length){
             for(var i = 0; i < this.selectedDay[day].length; ++i){
-                this.selectedDay[day][i].Rating = parseInt(this.getPreferenceRating(this.selectedDay[day][i]));
+                this.selectedDay[day][i].Rating = parseInt(this.getPreferenceRating(this.selectedDay[day][i]).toString());
             }
             this.selectedEvent = this.selectedDay[day];
         } else {
@@ -472,6 +475,11 @@ export class HomePage {
     this.selectedEvent = aEvent;
     
     
+  }
+  schedulePrefereces(shouldScheduleOnPreference){
+    var isSet = shouldScheduleOnPreference.checked;
+    var aEvent = this.selectedEvent;
+    this.SchedulePreference = isSet;
   }
 
 }

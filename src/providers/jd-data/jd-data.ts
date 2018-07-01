@@ -11,8 +11,8 @@ import { Injectable } from '@angular/core';
 export class JdDataProvider {
     user: any = {
         "LocationPreference" : ["Banglore", "New Delhi", "Gurgaon", "Pune", "Noida", "Hyderabad"],
-        "Skills" : ["Python", "PHP", "Javascript", "Nodejs", "Angularjs", "HTML", "CSS", "C++", "C"],
-        "PreferredSkills" : ["PHP", "Javascript"],
+        "Skills" : ["Python", "PHP", "Javascript", "Nodejs", "SQL", "Angularjs", "HTML", "CSS", "C++", "C"],
+        "PreferredSkills" : ["PHP", "Javascript", "SQL"],
         "NotificationForUpcomingWalkins": true,
         "UpcomingScheduledInterviews":true,
         "ShowBestCompany":false,

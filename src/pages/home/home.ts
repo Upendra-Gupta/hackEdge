@@ -171,7 +171,7 @@ export class HomePage {
     }
     return common;
   }
-  calculatePreference(oWalkin){
+  calculatePreference(oWalkin, bVal){
     var oUser = this.jdDataProvider.getUser();
     
     var currentCTC = parseFloat(oUser.CurrentCTC.split(" ")[0]);
@@ -191,46 +191,78 @@ export class HomePage {
         CTCContribution += (oUser.SalaryPreference * 35)/100;;
     
     }
+    var iMaxCTCContribution = CTCContribution;
     var SkillContribution = 100 - CTCContribution;
-     if(currentCTC*1.5 <= oMinCTCUserCanGet){
-        CTCContribution = CTCContribution;
-    } else if(currentCTC >= oMaxCTCUserCanGet){
+    var iMaxSkillContribution = SkillContribution;
+    var drivingForceCTC = 0;
+    var iMaxOfMins = oMinCTCUserCanGet > currentCTC ? oMinCTCUserCanGet : currentCTC;
+    var hike = ((((iMaxOfMins + oMaxCTCUserCanGet)/2)-currentCTC)/currentCTC)*100;
+    if(hike <= 15){
+        drivingForceCTC = hike * 2.2;
+    }
+    if(hike > 15 && hike <= 40){
+        drivingForceCTC = 15 * 2.2;
+        drivingForceCTC += (hike-15) * 1.32;
+    }
+    if(hike > 40){
+        drivingForceCTC = 15 * 2.2;
+        drivingForceCTC += 25 * 1.32;
+        drivingForceCTC += (hike-40)* 0.66;
+    }
+        
+    if(currentCTC >= oMaxCTCUserCanGet){
         CTCContribution = (CTCContribution * 33)/100;
     } 
-    else if(currentCTC > oMinCTCUserCanGet && currentCTC < oMaxCTCUserCanGet){
-        var prob = (oMaxCTCUserCanGet - currentCTC)/(oMaxCTCUserCanGet - oMinCTCUserCanGet);
-        CTCContribution = (CTCContribution * 67)/100 * prob;
-    }  else {
-        CTCContribution = CTCContribution * ((((oMaxCTCUserCanGet + oMinCTCUserCanGet)/2 - currentCTC)/currentCTC)*107)/100;
+    else if(currentCTC > oMinCTCUserCanGet){
+        
+        
+        
+        CTCContribution = (CTCContribution * (drivingForceCTC/100) * 0.9);
+    } 
+     else {
+        
+        CTCContribution = CTCContribution * (drivingForceCTC/100);
+        
+    }
+    
+    if(iMaxCTCContribution < CTCContribution){ 
+        CTCContribution = iMaxCTCContribution;
     }
    
-    //CTCContribution = (CTCContribution * ((oMaxCTCUserCanGet - currentCTC)/currentCTC) * 1.09)/100;
-    var iPreferredSkillsCount = oUser.PreferredSkills.length;
     var iPreferredCount = 0;
+    var driveForceSkills = 0;
     if(oUser.ShowBestCompany){
         iPreferredCount = this.getPreferredCount(oWalkin.skills, oUser.PreferredSkills);
-    } else {
-        iPreferredCount = this.getPreferredCount(oWalkin.skills, oUser.Skills);
-        iPreferredSkillsCount = oUser.Skills.length;
-    }
-    if(iPreferredCount !== 0){
+        driveForceSkills +=  (iPreferredCount*1.3);
+    } 
+    var iPreferCount = this.getPreferredCount(oWalkin.skills, oUser.Skills) - iPreferredCount;
+    driveForceSkills += (iPreferCount);
+    //iPreferredSkillsCount = oUser.Skills.length;
+    
+    if(driveForceSkills !== 0){
         
-            SkillContribution = SkillContribution * (iPreferredCount / iPreferredSkillsCount);
-            var iConsideringSkillInWalkin = SkillContribution * (iPreferredCount / oWalkin.skills.replace(/ /g, '').split(",").length);
-            if(SkillContribution < iConsideringSkillInWalkin){
-                SkillContribution = iConsideringSkillInWalkin;
-            }    
+        SkillContribution = SkillContribution * (driveForceSkills/(oWalkin.skills.replace(/ /g, '').split(",").length));
+            
     } else {    
         SkillContribution = 0;
     }
-    
+    if(iMaxSkillContribution < SkillContribution){ 
+        SkillContribution = iMaxSkillContribution;
+    }
+    if(SkillContribution === 0){
+        CTCContribution = 0;
+    }
+
+    if(bVal){
+        console.log( driveForceSkills + " " + CTCContribution + " " + SkillContribution);
+    }
     return (oUser.Skills.length) > 0 ? (CTCContribution + SkillContribution) : 0;
   }
   getPreferenceColour(oWalkin){
-    var TotalContribution = this.calculatePreference(oWalkin);
-    if(TotalContribution >= 67){
+    var TotalContribution = this.calculatePreference(oWalkin, false);
+    if(TotalContribution >= 70){
         return 3;
-    } else if(TotalContribution >= 33){
+    } else if(TotalContribution >= 37){
         return 2;
     } else {
         return 1;
@@ -238,8 +270,8 @@ export class HomePage {
     
     
   }
-  getPreferenceRating(oWalkin){
-    var TotalContribution = this.calculatePreference(oWalkin);
+  getPreferenceRating(oWalkin, bVal){
+    var TotalContribution = this.calculatePreference(oWalkin, bVal);
     return TotalContribution > 100 ? 100 : TotalContribution;
   }
   filterItems(items){
@@ -314,7 +346,7 @@ export class HomePage {
        // debugger;
         
         
-        return (that.getPreferenceRating(b)-that.getPreferenceRating(a));
+        return (that.getPreferenceRating(b,false)-that.getPreferenceRating(a,false));
     });
   }
   sortItemToSchedule(aItems){
@@ -382,7 +414,7 @@ export class HomePage {
         
         if(day <= Object.keys(this.selectedDay).length){
             for(var i = 0; i < this.selectedDay[day].length; ++i){
-                this.selectedDay[day][i].Rating = parseInt(this.getPreferenceRating(this.selectedDay[day][i]).toString());
+                this.selectedDay[day][i].Rating = parseInt(this.getPreferenceRating(this.selectedDay[day][i], true).toString());
             }
             this.selectedEvent = this.selectedDay[day];
         } else {

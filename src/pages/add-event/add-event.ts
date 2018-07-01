@@ -16,6 +16,7 @@ import { JdDataProvider } from '../../providers/jd-data/jd-data';
 export class AddEventPage {
 
   user: any;
+  locations: any;
   event = { title: "", location: [], message: "", startDate: "", endDate: "" };
 
   constructor(public jdDataProvider: JdDataProvider, public alertCtrl: AlertController,

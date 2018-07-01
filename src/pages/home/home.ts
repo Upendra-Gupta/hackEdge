@@ -30,6 +30,7 @@ export class HomePage {
   isSelectedDate: any;
   selectedDay: any;
   isSettingClicked: any;
+  ScheduleOn: any;
 
     selectedJobId: any;
 
@@ -52,6 +53,7 @@ export class HomePage {
     this.monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
     this.getDaysOfMonth();
     this.loadEventThisMonth();
+    
     
    /* if(this.isSettingClicked === false){
         this.isSelectedDate = 0;
@@ -312,6 +314,38 @@ export class HomePage {
         return (that.getPreferenceRating(b)-that.getPreferenceRating(a));
     });
   }
+  sortItemToSchedule(aItems){
+    
+    var that = this;
+    return aItems.sort(function(a, b){
+       // debugger;
+       a = a.Time;
+       b = b.Time;
+        var tEndHourFora = parseInt(a.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, a.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[0]);
+        var tEndMinutesFora = parseInt(a.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, a.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[1]);
+        var aAMorPM = a.replace(/ /g, '').split(",")[0].substr(a.replace(/ /g, '').split(",")[0].length-2 , a.replace(/ /g, '').split(",")[0].length).toUpperCase();
+        if(aAMorPM === "PM"){
+            if(tEndHourFora !== 12){
+                tEndHourFora += 12;
+            }
+        }
+        var tEndHourForb = parseInt(b.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, b.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[0]);
+        var tEndMinutesForb = parseInt(b.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, b.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[1]);
+        var bAMorPM = b.replace(/ /g, '').split(",")[0].substr(b.replace(/ /g, '').split(",")[0].length-2 , b.replace(/ /g, '').split(",")[0].length).toUpperCase();
+        
+        if(bAMorPM === "PM"){
+            if(tEndHourForb !== 12){
+                tEndHourForb += 12;
+            }
+        }
+        if(tEndHourForb !== tEndHourFora){
+            return (tEndHourFora-tEndHourForb);
+        } else {
+            return (tEndMinutesFora-tEndMinutesForb);
+        }
+        
+    });
+  }
   selectWalkinsForMonth(){
     var len = Object.keys(this.jdDataProvider.getJd()).length;
     var i = 0;
@@ -339,13 +373,13 @@ export class HomePage {
    
   }
   selectDate(day) {
-        
+        this.ScheduleOn = "false";
         this.isSelectedDate=day;
         this.isSelected = true
         
         if(day <= Object.keys(this.selectedDay).length){
             for(var i = 0; i < this.selectedDay[day].length; ++i){
-                this.selectedDay[day][i].Rating = this.getPreferenceRating(this.selectedDay[day][i]);
+                this.selectedDay[day][i].Rating = parseInt(this.getPreferenceRating(this.selectedDay[day][i]));
             }
             this.selectedEvent = this.selectedDay[day];
         } else {
@@ -390,6 +424,54 @@ export class HomePage {
       ]
     });
     alert.present();*/
+  }
+  scheduleInterviews(shouldSchedule){
+    var isSet = shouldSchedule.checked;
+    var aEvent = this.selectedEvent;
+    this.ScheduleOn = isSet;
+    if(isSet){
+        
+        aEvent = this.sortItemToSchedule(aEvent);
+        var lastSelectedEndHour = 100;
+        var lastSelectedEndMinute = 100;
+        var j = 0;
+        for(var i = 0; i < aEvent.length-1; ++i){
+            var a = aEvent[j].Time;
+            var tEndHourFora = parseInt(a.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, a.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[0]);
+            var tEndMinutesFora = parseInt(a.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, a.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[1]);
+            var aAMorPM = a.replace(/ /g, '').split(",")[0].substr(a.replace(/ /g, '').split(",")[0].length-2 , a.replace(/ /g, '').split(",")[0].length).toUpperCase();
+            if(aAMorPM === "PM"){
+                if(tEndHourFora !== 12){
+                    tEndHourFora += 12;
+                }
+            }
+            
+            var b = aEvent[i+1].Time;
+            var tStartHourForb = parseInt(b.replace(/ /g, '').split(",")[0].split("-")[0].substr(0, b.replace(/ /g, '').split(",")[0].split("-")[1].length-1).split(":")[0]);
+            var tStartMinutesForb = parseInt(b.replace(/ /g, '').split(",")[0].split("-")[0].substr(0, b.replace(/ /g, '').split(",")[0].split("-")[1].length-1).split(":")[1]);
+            var bAMorPM = b.replace(/ /g, '').split(",")[0].split("-")[0].substr(b.replace(/ /g, '').split(",")[0].split("-")[0].length-2, b.replace(/ /g, '').split(",")[0].split("-")[0].length).toUpperCase();
+
+            if(bAMorPM === "PM"){
+                if(tStartHourForb !== 12){
+                    tStartHourForb += 12;
+                }
+            }
+            if(tEndHourFora > tStartHourForb || (tEndHourFora === tStartHourForb && tEndMinutesFora > tStartMinutesForb)){
+                    aEvent[i+1].Conflicting = 1;
+                    
+                
+            } else {
+                j = i+1;
+            }
+        }
+    
+    } else {
+        aEvent = this.sortItems(aEvent);
+    }
+    
+    this.selectedEvent = aEvent;
+    
+    
   }
 
 }

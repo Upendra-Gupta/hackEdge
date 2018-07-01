@@ -48,6 +48,15 @@
       </ion-row>
     </ion-grid>
   </div>
+  <ion-grid>
+    <ion-row style="text-align: right;">
+        
+            <ion-label>Schedule</ion-label>
+            <ion-toggle [(ngModel)]="ScheduleOn" name="ScheduleOn" checked="ScheduleOn" (ionChange)="scheduleInterviews($event)"></ion-toggle>
+        
+    </ion-row>
+  </ion-grid>
+    
   <div class="selected-event" *ngIf="isSelected">
     <ion-list>
       <ion-item *ngFor="let se of selectedEvent" (click)="selectWalkin(se)">
@@ -59,7 +68,7 @@
         -->
       
         <ion-grid>
-            <ion-row>
+            <ion-row *ngIf="ScheduleOn && se.Conflicting" style="border-style: dotted;border-color: red;">
                 <div>
                     <ion-icon *ngIf="getPreferenceColour(se) === 3" style="color: green;font-size: 36px;padding:0px" name="md-arrow-dropright"></ion-icon>
                     <ion-icon *ngIf="getPreferenceColour(se) === 2" style="color: yellow;font-size: 36px;padding:0px" name="md-arrow-dropright"></ion-icon>
@@ -77,6 +86,38 @@
                   </p>
                 
               </ion-col>
+              
+              <ion-col style="text-align: right;">
+                  <p>
+                      <ion-icon name="md-bicycle"></ion-icon>
+                      {{se.ETA}}
+                  </p>
+                  
+                
+                <p>
+                    <ion-icon name="md-pricetag"></ion-icon>
+                    {{se.Salary}}</p>
+              </ion-col>
+           </ion-row>
+           <ion-row *ngIf="!(ScheduleOn && se.Conflicting)">
+                <div>
+                    <ion-icon *ngIf="getPreferenceColour(se) === 3" style="color: green;font-size: 36px;padding:0px" name="md-arrow-dropright"></ion-icon>
+                    <ion-icon *ngIf="getPreferenceColour(se) === 2" style="color: yellow;font-size: 36px;padding:0px" name="md-arrow-dropright"></ion-icon>
+                    <ion-icon *ngIf="getPreferenceColour(se) === 1" style="color: red;font-size: 36px;padding:0px" name="md-arrow-dropright"></ion-icon>
+                </div>
+              <ion-col style="text-align: left;">
+                  
+                  
+               <h2>{{se.Title}}</h2>
+               <h3>{{se.Message}}</h3>
+              </ion-col>
+              <ion-col style="text-align: right;">
+                  <p>
+                      {{se.Rating}}
+                  </p>
+                
+              </ion-col>
+              
               <ion-col style="text-align: right;">
                   <p>
                       <ion-icon name="md-bicycle"></ion-icon>

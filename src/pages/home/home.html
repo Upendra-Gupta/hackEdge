@@ -69,7 +69,7 @@
         -->
       
         <ion-grid>
-            <ion-row *ngIf="ScheduleOn && se.Conflicting" style="border-style: dotted;border-color: red;">
+            <ion-row *ngIf="(ScheduleOn || SchedulePreference) && se.Conflicting" style="border-style: dotted;border-color: red;">
                 <div>
                     <ion-icon *ngIf="getPreferenceColour(se) === 3" style="color: green;font-size: 36px;padding:0px" name="md-arrow-dropright"></ion-icon>
                     <ion-icon *ngIf="getPreferenceColour(se) === 2" style="color: yellow;font-size: 36px;padding:0px" name="md-arrow-dropright"></ion-icon>
@@ -87,6 +87,13 @@
                   </p>
                 
               </ion-col>
+               <ion-col style="text-align: right;">
+                  <p>
+                      {{se.Time}}
+                  </p>
+                
+              </ion-col>
+             
               
               <ion-col style="text-align: right;">
                   <p>
@@ -100,7 +107,7 @@
                     {{se.Salary}}</p>
               </ion-col>
            </ion-row>
-           <ion-row *ngIf="!(ScheduleOn && se.Conflicting)">
+           <ion-row *ngIf="!((ScheduleOn || SchedulePreference)  && se.Conflicting)">
                 <div>
                     <ion-icon *ngIf="getPreferenceColour(se) === 3" style="color: green;font-size: 36px;padding:0px" name="md-arrow-dropright"></ion-icon>
                     <ion-icon *ngIf="getPreferenceColour(se) === 2" style="color: yellow;font-size: 36px;padding:0px" name="md-arrow-dropright"></ion-icon>
@@ -115,6 +122,12 @@
               <ion-col style="text-align: right;">
                   <p>
                       {{se.Rating}}
+                  </p>
+                
+              </ion-col>
+              <ion-col style="text-align: right;">
+                  <p>
+                      {{se.Time}}
                   </p>
                 
               </ion-col>

@@ -409,6 +409,7 @@ export class HomePage {
   }
   selectDate(day) {
         this.ScheduleOn = "false";
+        this.SchedulePreference = "false";
         this.isSelectedDate=day;
         this.isSelected = true
         
@@ -460,10 +461,18 @@ export class HomePage {
     });
     alert.present();*/
   }
+  resetConflicts(){
+     var aEvent = this.selectedEvent;
+     for(var i = 0; i < aEvent.length; ++i){
+        aEvent[i].Conflicting = 0;
+     }
+  }
   scheduleInterviews(shouldSchedule){
+    this.SchedulePreference = false;
     var isSet = shouldSchedule.checked;
     var aEvent = this.selectedEvent;
     this.ScheduleOn = isSet;
+    this.resetConflicts();
     if(isSet){
         
         aEvent = this.sortItemToSchedule(aEvent);
@@ -508,10 +517,114 @@ export class HomePage {
     
     
   }
+  getMaxPreference(aEvent){
+      var i = 0;
+      var max = 0;
+      var temp = 0;
+      for(i = 0; i < aEvent.length; ++i){
+        temp = this.calculatePreference(aEvent[i], false);
+        if(temp > max){
+            max = temp;
+        }
+      }
+      return max;
+  }
   schedulePrefereces(shouldScheduleOnPreference){
+    this.resetConflicts();
+    this.ScheduleOn = false;
     var isSet = shouldScheduleOnPreference.checked;
     var aEvent = this.selectedEvent;
     this.SchedulePreference = isSet;
-  }
+    
+    var iMaxPreference = this.getMaxPreference(aEvent);
+    if(isSet){
+        
+        aEvent = this.sortItemToSchedule(aEvent);
+        var check = false;
+        var j = 0;
+        for(var i = 0; i < aEvent.length; ++i){
+            var current = this.calculatePreference(aEvent[i], false);
+            if(iMaxPreference === current && check == false){
+                j = i;
+                aEvent = this.toggleConflicts(aEvent, i);
+                check = true;
+            }
+            if(check === true && i+1 < aEvent.length){
+                var a = aEvent[j].Time;
+                var tEndHourFora = parseInt(a.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, a.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[0]);
+                var tEndMinutesFora = parseInt(a.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, a.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[1]);
+                var aAMorPM = a.replace(/ /g, '').split(",")[0].substr(a.replace(/ /g, '').split(",")[0].length-2 , a.replace(/ /g, '').split(",")[0].length).toUpperCase();
+                if(aAMorPM === "PM"){
+                    if(tEndHourFora !== 12){
+                        tEndHourFora += 12;
+                    }
+                }
 
+                var b = aEvent[i+1].Time;
+                var tStartHourForb = parseInt(b.replace(/ /g, '').split(",")[0].split("-")[0].substr(0, b.replace(/ /g, '').split(",")[0].split("-")[1].length-1).split(":")[0]);
+                var tStartMinutesForb = parseInt(b.replace(/ /g, '').split(",")[0].split("-")[0].substr(0, b.replace(/ /g, '').split(",")[0].split("-")[1].length-1).split(":")[1]);
+                var bAMorPM = b.replace(/ /g, '').split(",")[0].split("-")[0].substr(b.replace(/ /g, '').split(",")[0].split("-")[0].length-2, b.replace(/ /g, '').split(",")[0].split("-")[0].length).toUpperCase();
+
+                if(bAMorPM === "PM"){
+                    if(tStartHourForb !== 12){
+                        tStartHourForb += 12;
+                    }
+                }
+                if(tEndHourFora > tStartHourForb || (tEndHourFora === tStartHourForb && tEndMinutesFora > tStartMinutesForb)){
+                    aEvent[i+1].Conflicting = 1;
+                    
+
+                } else {
+                    j = i+1;
+                }
+
+            }
+        }
+    
+    } else {
+        aEvent = this.sortItems(aEvent);
+    }
+    
+    this.selectedEvent = aEvent;
+    
+    
+  }
+  toggleConflicts(aEvent, current){
+    
+    var i = 0;
+    var j = current;
+    for(i = current; i > 0; --i){
+        var a = aEvent[j].Time;
+        var tStartHourFora = parseInt(a.replace(/ /g, '').split(",")[0].split("-")[0].substr(0, a.replace(/ /g, '').split(",")[0].split("-")[1].length-1).split(":")[0]);
+        var tStartMinutesFora = parseInt(a.replace(/ /g, '').split(",")[0].split("-")[0].substr(0, a.replace(/ /g, '').split(",")[0].split("-")[1].length-1).split(":")[1]);
+        var aAMorPM = a.replace(/ /g, '').split(",")[0].split("-")[0].substr(a.replace(/ /g, '').split(",")[0].split("-")[0].length-2, a.replace(/ /g, '').split(",")[0].split("-")[0].length).toUpperCase();
+
+        if(aAMorPM === "PM"){
+            if(tStartHourFora !== 12){
+                tStartHourFora += 12;
+            }
+        }
+
+
+        var b = aEvent[i-1].Time;
+        var tEndHourForb = parseInt(b.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, b.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[0]);
+        var tEndMinutesForb = parseInt(b.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, b.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[1]);
+        var bAMorPM = b.replace(/ /g, '').split(",")[0].substr(b.replace(/ /g, '').split(",")[0].length-2 , b.replace(/ /g, '').split(",")[0].length).toUpperCase();
+        if(bAMorPM === "PM"){
+            if(tEndHourForb !== 12){
+                tEndHourForb += 12;
+            }
+        }
+
+            
+        if(tEndHourForb > tStartHourFora || (tEndHourForb === tStartHourFora && tEndMinutesForb > tStartMinutesFora)){
+                aEvent[i-1].Conflicting = 1;
+                
+        } else {
+            j = i-1;
+        }
+        
+    }
+    return aEvent;
+  }
 }

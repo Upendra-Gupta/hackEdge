@@ -55,7 +55,7 @@ export class JdDataProvider {
                 "Message": "PHP Developer",
                 "skills": "PHP, SQL",
                 "Eligibility": "Graduation",
-                "Time": "2:30 PM - 5:30 PM, 1 Jul",
+                "Time": "12:15 PM - 5:30 PM, 1 Jul",
                 "EmpType": "Regular",
                 "Exp": "3-7 years",
                 "ETA": "30 mins away",

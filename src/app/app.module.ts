@@ -9,7 +9,7 @@ import { MyApp } from './app.component';
 import { LoginPage } from '../pages/login/login';
 import { HomePage } from '../pages/home/home';
 import { AddEventPage } from '../pages/add-event/add-event';
-import { EditEventPage } from '../pages/edit-event/edit-event';
+
 import { JdPage } from '../pages/jd/jd';
 import { JdDataProvider } from '../providers/jd-data/jd-data';
 
@@ -21,7 +21,7 @@ import { JdDataProvider } from '../providers/jd-data/jd-data';
     LoginPage,
     HomePage,
     AddEventPage,
-    EditEventPage,
+    
     JdPage
   ],
   imports: [
@@ -35,7 +35,7 @@ import { JdDataProvider } from '../providers/jd-data/jd-data';
     LoginPage,
     HomePage,
     AddEventPage,
-    EditEventPage,
+    
     JdPage
   ],
   providers: [

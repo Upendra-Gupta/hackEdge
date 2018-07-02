@@ -413,11 +413,35 @@ export class HomePage {
         this.isSelectedDate=day;
         this.isSelected = true
         
+        var now=this.currentDate;//moment();
+        var currentTime = new Date();
+
         if(day <= Object.keys(this.selectedDay).length){
             for(var i = 0; i < this.selectedDay[day].length; ++i){
                 this.selectedDay[day][i].Rating = parseInt(this.getPreferenceRating(this.selectedDay[day][i], true).toString());
+
+
+                var a=this.selectedDay[day][i].Time;
+             
+                var tEndHourFora = parseInt(a.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, a.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[0]);
+                var tEndMinutesFora = parseInt(a.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, a.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[1]);
+                var aAMorPM = a.replace(/ /g, '').split(",")[0].substr(a.replace(/ /g, '').split(",")[0].length-2 , a.replace(/ /g, '').split(",")[0].length).toUpperCase();
+                if(aAMorPM === "PM"){
+                   if(tEndHourFora !== 12){    
+                       tEndHourFora += 12;
+                   }
+                }
+
+                if(now=== day && (tEndHourFora*60 + tEndMinutesFora)< ((currentTime.getHours()*60)+ currentTime.getMinutes() )){
+                    this.selectedDay[day][i].Timeout=true;
+                } else {
+                    this.selectedDay[day][i].Timeout=false;
+                }
+
             }
             this.selectedEvent = this.selectedDay[day];
+
+            
         } else {
             this.selectedEvent = new Array();
         }

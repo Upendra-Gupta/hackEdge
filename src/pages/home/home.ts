@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController, AlertController } from 'ionic-angular';
+import { NavController} from 'ionic-angular';
 import { AddEventPage } from '../add-event/add-event';
-import { EditEventPage } from '../edit-event/edit-event';
+
 import { Calendar } from '@ionic-native/calendar';
 import { JdPage } from '../jd/jd';
 
@@ -35,9 +35,8 @@ export class HomePage {
 
     
 
-  constructor(public jdDataProvider: JdDataProvider, private alertCtrl: AlertController,
-    public navCtrl: NavController,
-    private calendar: Calendar) {
+  constructor(public jdDataProvider: JdDataProvider, public navCtrl: NavController,
+    ) {
     //this.selectedJobId="Helllllllllllllllllllllllllllllllllllllllllllllllllll";
         
         console.log('home page constructor');
@@ -139,7 +138,7 @@ export class HomePage {
   }
 
   checkEvent(day) {
-    var hasEvent = false;
+    //var hasEvent = false;
     //var thisDate1 = this.date.getFullYear()+"-"+(this.date.getMonth()+1)+"-"+day+" 00:00:00";
     //var thisDate2 = this.date.getFullYear()+"-"+(this.date.getMonth()+1)+"-"+day+" 23:59:59";
     /*this.eventList.forEach(event => {
@@ -351,7 +350,7 @@ export class HomePage {
   }
   sortItemToSchedule(aItems){
     
-    var that = this;
+    //var that = this;
     return aItems.sort(function(a, b){
        // debugger;
        a = a.Time;
@@ -500,8 +499,8 @@ export class HomePage {
     if(isSet){
         
         aEvent = this.sortItemToSchedule(aEvent);
-        var lastSelectedEndHour = 100;
-        var lastSelectedEndMinute = 100;
+       // var lastSelectedEndHour = 100;
+       // var lastSelectedEndMinute = 100;
         var j = 0;
         for(var i = 0; i < aEvent.length-1; ++i){
             var a = aEvent[j].Time;

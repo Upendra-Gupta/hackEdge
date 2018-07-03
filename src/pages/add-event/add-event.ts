@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
-import { Calendar } from '@ionic-native/calendar';
+//import { Calendar } from '@ionic-native/calendar';
 
 
 // import the class from the service
@@ -21,8 +21,7 @@ export class AddEventPage {
 
   constructor(public jdDataProvider: JdDataProvider, public alertCtrl: AlertController,
     public navCtrl: NavController,
-    public navParams: NavParams,
-    private calendar: Calendar) {
+    public navParams: NavParams) {
     this.user = this.jdDataProvider.getUser();
     this.locations = this.jdDataProvider.getLocation();
   }

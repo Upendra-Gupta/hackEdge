@@ -693,7 +693,7 @@ export class HomePage {
         bValue = true;
     } else {
         bValue = false;
-        aEvent = this.sortItems(aEvent, bValue);
+        aEvent = this.sortItems(aEvent);
     }
     
     this.selectedEvent = this.getUpdatedDistanceMatrix(aEvent, bValue);

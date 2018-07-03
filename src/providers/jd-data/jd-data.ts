@@ -10,8 +10,8 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class JdDataProvider {
     user: any = {
-        "LocationPreference" : ["Banglore", "New Delhi", "Gurgaon", "Pune", "Noida", "Hyderabad"],
-        "Skills" : ["Python", "PHP", "Javascript", "Nodejs", "SQL", "Angularjs", "HTML", "CSS", "C++", "C"],
+        "LocationPreference" : ["Bangalore", "New Delhi", "Gurgaon", "Pune", "Noida", "Hyderabad"],
+        "Skills" : ["Java", "Python", "PHP", "Javascript", "Nodejs", "SQL", "Angularjs", "HTML", "CSS", "C++", "C"],
         "PreferredSkills" : ["PHP", "Javascript", "SQL"],
         "NotificationForUpcomingWalkins": true,
         "UpcomingScheduledInterviews":true,
@@ -923,7 +923,7 @@ export class JdDataProvider {
                 "EmpType": "Regular",
                 "Exp": "3-7 years",
                 "ETA": "20 mins away",
-                "Location": "Banglore",
+                "Location": "Bangalore",
                 "Salary": "13-18 lpa",
                 "JD": "Minimum 5 years of experience as a Java web application developer in a large environment and Evaluate and identify new technologies for implementation"
             },
@@ -1003,7 +1003,7 @@ export class JdDataProvider {
                 "EmpType": "Regular",
                 "Exp": "3-7 years",
                 "ETA": "20 mins away",
-                "Location": "Banglore",
+                "Location": "Bangalore",
                 "Salary": "13-18 lpa",
                 "JD": "Minimum 5 years of experience as a Java web application developer in a large environment and Evaluate and identify new technologies for implementation"
             }
@@ -1070,7 +1070,7 @@ export class JdDataProvider {
                 "EmpType": "Regular",
                 "Exp": "3-7 years",
                 "ETA": "20 mins away",
-                "Location": "Banglore",
+                "Location": "Bangalore",
                 "Salary": "13-18 lpa",
                 "JD": "Minimum 5 years of experience as a Java web application developer in a large environment and Evaluate and identify new technologies for implementation"
             }
@@ -1111,7 +1111,7 @@ export class JdDataProvider {
                 "EmpType": "Regular",
                 "Exp": "3-7 years",
                 "ETA": "20 mins away",
-                "Location": "Banglore",
+                "Location": "Bangalore",
                 "Salary": "13-18 lpa",
                 "JD": "Minimum 5 years of experience as a Java web application developer in a large environment and Evaluate and identify new technologies for implementation"
             }
@@ -1178,7 +1178,7 @@ export class JdDataProvider {
                 "EmpType": "Regular",
                 "Exp": "3-7 years",
                 "ETA": "20 mins away",
-                "Location": "Banglore",
+                "Location": "Bangalore",
                 "Salary": "13-18 lpa",
                 "JD": "Minimum 5 years of experience as a Java web application developer in a large environment and Evaluate and identify new technologies for implementation"
             }
@@ -1232,7 +1232,7 @@ export class JdDataProvider {
                 "EmpType": "Regular",
                 "Exp": "3-7 years",
                 "ETA": "20 mins away",
-                "Location": "Banglore",
+                "Location": "Bangalore",
                 "Salary": "13-18 lpa",
                 "JD": "Minimum 5 years of experience as a Java web application developer in a large environment and Evaluate and identify new technologies for implementation"
             }
@@ -1286,7 +1286,7 @@ export class JdDataProvider {
                 "EmpType": "Regular",
                 "Exp": "3-7 years",
                 "ETA": "20 mins away",
-                "Location": "Banglore",
+                "Location": "Bangalore",
                 "Salary": "13-18 lpa",
                 "JD": "Minimum 5 years of experience as a Java web application developer in a large environment and Evaluate and identify new technologies for implementation"
             }
@@ -1340,7 +1340,7 @@ export class JdDataProvider {
                 "EmpType": "Regular",
                 "Exp": "3-7 years",
                 "ETA": "20 mins away",
-                "Location": "Banglore",
+                "Location": "Bangalore",
                 "Salary": "13-18 lpa",
                 "JD": "Minimum 5 years of experience as a Java web application developer in a large environment and Evaluate and identify new technologies for implementation"
             }
@@ -1381,7 +1381,7 @@ export class JdDataProvider {
                 "EmpType": "Regular",
                 "Exp": "3-7 years",
                 "ETA": "20 mins away",
-                "Location": "Banglore",
+                "Location": "Bangalore",
                 "Salary": "13-18 lpa",
                 "JD": "Minimum 5 years of experience as a Java web application developer in a large environment and Evaluate and identify new technologies for implementation"
             }
@@ -1435,15 +1435,17 @@ export class JdDataProvider {
                 "EmpType": "Regular",
                 "Exp": "3-7 years",
                 "ETA": "20 mins away",
-                "Location": "Banglore",
+                "Location": "Bangalore",
                 "Salary": "13-18 lpa",
                 "JD": "Minimum 5 years of experience as a Java web application developer in a large environment and Evaluate and identify new technologies for implementation"
             }
         ]
     
 };
-
-    location: any = ["Noida", "Banglore", "New Delhi", "Gurgaon", "Pune", "Chennai"];
+    //["Bangalore", "New Delhi", "Gurgaon", "Pune", "Noida", "Hyderabad"],
+    location: any = ["Noida", "Bangalore", "New Delhi", "Gurgaon", "Pune", "Chennai", "Hyderabad"];
+    lats: any = [28.5355, 12.9716, 28.6139, 28.4595, 18.5204, 13.0827, 17.3850];
+    longs: any = [77.3910, 77.5946, 77.2090, 77.0266, 73.8567, 80.2707, 78.4867];
 
   constructor(public http: HttpClient) {
     console.log('Hello JdDataProvider Provider');
@@ -1460,6 +1462,14 @@ export class JdDataProvider {
   getLocation() {
     
     return this.location;
+  }
+  getLats() {
+    
+    return this.lats;
+  }
+  getLongs() {
+    
+    return this.longs;
   }
   setPreferredLocation(location){
     this.user["LocationPreference"] = location;

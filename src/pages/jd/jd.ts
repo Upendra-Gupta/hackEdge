@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { HomePage } from '../home/home';
 
 
 /**
@@ -32,6 +33,9 @@ export class JdPage {
     
   ionViewDidLoad() {
     console.log('ionViewDidLoad JdPage');
+  }
+  attend(){
+      this.navCtrl.push(HomePage, {status : true, scheduleOn:this.navParams.get('scheduleOn'), schedulePreference:this.navParams.get('schedulePreference'), selectedDate:this.navParams.get('selectedDate')});
   }
 
 }

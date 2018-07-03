@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController} from 'ionic-angular';
+import { NavController, NavParams} from 'ionic-angular';
 import { AddEventPage } from '../add-event/add-event';
 
-import { Calendar } from '@ionic-native/calendar';
+//import { Calendar } from '@ionic-native/calendar';
 import { JdPage } from '../jd/jd';
 
 
@@ -32,10 +32,15 @@ export class HomePage {
   isSettingClicked: any;
   ScheduleOn: any;
   SchedulePreference: any;
-
+  currLats: any;
+  currLongs: any;
+  getCoordsPos: any;
+  Lats: any;
+  Longs: any;
+  isJDNavigated: any;
     
 
-  constructor(public jdDataProvider: JdDataProvider, public navCtrl: NavController,
+  constructor(public jdDataProvider: JdDataProvider, public navCtrl: NavController,public navParams: NavParams
     ) {
     //this.selectedJobId="Helllllllllllllllllllllllllllllllllllllllllllllllllll";
         
@@ -45,6 +50,34 @@ export class HomePage {
         this.isSelected =false;
         this.selectedDay = new Array();
         this.isSettingClicked = false;
+        this.getCoordsPos = {
+            "noida" : 0,
+            "bangalore" : 1,
+            "new delhi": 2,
+            "gurgaon" : 3,
+            "gurugram" : 3,
+            "pune" : 4,
+            "chennai" : 5,
+            "madras" : 5,
+            "hyderabad" : 6,
+            "banglore" : 1,
+            "bengaluru" : 1
+        };
+        this.currLats = 28.5137;
+        this.currLongs = 77.3769;
+        this.Lats = this.jdDataProvider.getLats();
+        
+        this.Longs = this.jdDataProvider.getLongs();
+        this.isJDNavigated = false;
+        if(this.navParams && this.navParams.get('status')){
+            this.isJDNavigated = true;
+            this.ScheduleOn = this.navParams.get('scheduleOn');
+            this.SchedulePreference = this.navParams.get('schedulePreference');
+            this.isSelectedDate = this.navParams.get('selectedDate');
+            this.isSelected = true;
+            
+        } 
+        
     }
 
   ionViewWillEnter() {
@@ -61,13 +94,20 @@ export class HomePage {
         this.isSettingClicked = false;
     }*/
     this.selectWalkinsForMonth();
-    if(this.isSelected){
-        //this.selectedEvent = this.selectedDay[this.isSelectedDate];
-        this.selectDate(this.isSelectedDate);
-    } else {
-        
-        this.selectDate(this.currentDate);
+    
+        if(this.isSelected){
+            //this.selectedEvent = this.selectedDay[this.isSelectedDate];
+            this.selectDate(this.isSelectedDate);
+        } else {
+
+            this.selectDate(this.currentDate);
+        }
+    if(this.ScheduleOn){
+        this.scheduleInterviews({checked:true});
+    } else if(this.SchedulePreference){
+        this.schedulePrefereces({checked:true});
     }
+    
   }
 
   getDaysOfMonth() {
@@ -406,20 +446,42 @@ export class HomePage {
    this.selectedDay[day] = aEvent;
    
   }
+  getLocationInKms(sLocation, currLats, currLongs){
+        
+        
+        var locs = "";
+        var aLats = this.Lats;
+        var aLongs = this.Longs;
+        
+       
+        if(sLocation === "Sector 21, Noida"){
+             return Math.round(this.getDistanceFromLatLonInKm(28.5983, 77.3288, currLats, currLongs)* 100) / 100 + " Kms away";
+        } else if(sLocation === "Sector 2, Noida"){
+            return Math.round(this.getDistanceFromLatLonInKm(28.5830, 77.3132, currLats, currLongs)* 100) / 100 + " Kms away";
+        } else if(sLocation === "Sector 132, Noida"){
+            return "0.50 Kms away";
+        } else {
+             locs = sLocation.replace(/ /g, '').split(",")[sLocation.replace(/ /g, '').split(",").length-1].toLowerCase();
+             return Math.round(this.getDistanceFromLatLonInKm(aLats[this.getCoordsPos[locs]],aLongs[this.getCoordsPos[locs]], currLats, currLongs)* 100) / 100 + " Kms away";
+
+        }
+  }
   selectDate(day) {
-        this.ScheduleOn = "false";
-        this.SchedulePreference = "false";
+        if(!(this.isJDNavigated)){
+            this.ScheduleOn = false;
+            this.SchedulePreference = false;
+        } 
+        this.isJDNavigated = false;
         this.isSelectedDate=day;
         this.isSelected = true
-        
         var now=this.currentDate;//moment();
         var currentTime = new Date();
 
         if(day <= Object.keys(this.selectedDay).length){
             for(var i = 0; i < this.selectedDay[day].length; ++i){
-                this.selectedDay[day][i].Rating = parseInt(this.getPreferenceRating(this.selectedDay[day][i], true).toString());
-
-
+                this.selectedDay[day][i].Rating = parseInt(this.getPreferenceRating(this.selectedDay[day][i], true).toString());    
+                this.selectedDay[day][i].ETA = this.getLocationInKms(this.selectedDay[day][i].Location, this.currLats, this.currLongs); 
+                
                 var a=this.selectedDay[day][i].Time;
              
                 var tEndHourFora = parseInt(a.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, a.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[0]);
@@ -449,7 +511,7 @@ export class HomePage {
   }
   selectWalkin(walkin) {
     
-    this.navCtrl.push(JdPage, {jd:walkin});
+    this.navCtrl.push(JdPage, {jd:walkin, scheduleOn:this.ScheduleOn, schedulePreference:this.SchedulePreference, selectedDate:this.isSelectedDate});
   }
   deleteEvent(evt) {
     // console.log(new Date(evt.startDate.replace(/\s/, 'T')));
@@ -490,12 +552,36 @@ export class HomePage {
         aEvent[i].Conflicting = 0;
      }
   }
+  getUpdatedDistanceMatrix(aEvent, bVal){
+    
+    
+    var latestScheduledLoc = aEvent[0].Location;
+    var i = 0;
+    if(bVal){
+        for(i = 1; i < aEvent.length; ++i){
+            var sLocation = aEvent[i].Location;
+            var locs = sLocation.replace(/ /g, '').split(",")[sLocation.replace(/ /g, '').split(",").length-1].toLowerCase();
+            aEvent[i].ETA = this.getLocationInKms(latestScheduledLoc, this.Lats[this.getCoordsPos[locs]], this.Longs[this.getCoordsPos[locs]]);
+            if(!(aEvent[i].Conflicting === 1) && bVal){
+                latestScheduledLoc = aEvent[i].Location;
+            }
+        }
+    } else {
+        for(i = 0; i < aEvent.length; ++i){
+            
+            aEvent[i].ETA = this.getLocationInKms(aEvent[i].Location, this.currLats, this.currLongs); 
+        }
+    }
+    
+    return aEvent;
+  }
   scheduleInterviews(shouldSchedule){
     this.SchedulePreference = false;
     var isSet = shouldSchedule.checked;
     var aEvent = this.selectedEvent;
     this.ScheduleOn = isSet;
     this.resetConflicts();
+    var bValue = false;
     if(isSet){
         
         aEvent = this.sortItemToSchedule(aEvent);
@@ -531,12 +617,13 @@ export class HomePage {
                 j = i+1;
             }
         }
-    
+        bValue = true;
     } else {
+        bValue = false;
         aEvent = this.sortItems(aEvent);
     }
     
-    this.selectedEvent = aEvent;
+    this.selectedEvent = this.getUpdatedDistanceMatrix(aEvent, bValue);
     
     
   }
@@ -558,7 +645,7 @@ export class HomePage {
     var isSet = shouldScheduleOnPreference.checked;
     var aEvent = this.selectedEvent;
     this.SchedulePreference = isSet;
-    
+    var bValue = false;
     var iMaxPreference = this.getMaxPreference(aEvent);
     if(isSet){
         
@@ -603,12 +690,13 @@ export class HomePage {
 
             }
         }
-    
+        bValue = true;
     } else {
-        aEvent = this.sortItems(aEvent);
+        bValue = false;
+        aEvent = this.sortItems(aEvent, bValue);
     }
     
-    this.selectedEvent = aEvent;
+    this.selectedEvent = this.getUpdatedDistanceMatrix(aEvent, bValue);
     
     
   }
@@ -649,5 +737,22 @@ export class HomePage {
         
     }
     return aEvent;
+  }
+  getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = this.deg2rad(lon2-lon1); 
+    var a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+      ; 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c; // Distance in km
+    return d;
+  }
+
+  deg2rad(deg) {
+    return deg * (Math.PI/180)
   }
 }

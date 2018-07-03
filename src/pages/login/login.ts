@@ -15,7 +15,9 @@ import { HomePage } from '../home/home';
   templateUrl: 'login.html',
 })
 export class LoginPage {
-
+    
+    name: any;
+    password: any;
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
 
@@ -24,7 +26,12 @@ export class LoginPage {
   }
  
   signin(){
-    this.navCtrl.push(HomePage);
+    if(this.name === "Upe" && this.password === "111"){
+        
+        this.navCtrl.push(HomePage);
+    } else if(this.name !== "" && this.password === "222"){    
+        this.navCtrl.push(HomePage);
+    }
   }
 
 }

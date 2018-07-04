@@ -639,6 +639,16 @@ export class HomePage {
       }
       return max;
   }
+  getTotalNumberOfNonConflictingInterviews(aEvent){
+    var k = 0;
+    var count = 0;
+    for(var k = 0; k < aEvent.length; ++k){
+        if(aEvent[k].Conflicting !== 1){
+            ++count;
+        }
+    }
+    return count;
+  }
   schedulePrefereces(shouldScheduleOnPreference){
     this.resetConflicts();
     this.ScheduleOn = false;
@@ -647,56 +657,72 @@ export class HomePage {
     this.SchedulePreference = isSet;
     var bValue = false;
     var iMaxPreference = this.getMaxPreference(aEvent);
+    var mainEvent = new Array();
+    var check = false;
     if(isSet){
         
         aEvent = this.sortItemToSchedule(aEvent);
-        var check = false;
         var j = 0;
-        for(var i = 0; i < aEvent.length; ++i){
-            var current = this.calculatePreference(aEvent[i], false);
-            if(iMaxPreference === current && check == false){
-                j = i;
-                aEvent = this.toggleConflicts(aEvent, i);
-                check = true;
-            }
-            if(check === true && i+1 < aEvent.length){
-                var a = aEvent[j].Time;
-                var tEndHourFora = parseInt(a.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, a.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[0]);
-                var tEndMinutesFora = parseInt(a.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, a.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[1]);
-                var aAMorPM = a.replace(/ /g, '').split(",")[0].substr(a.replace(/ /g, '').split(",")[0].length-2 , a.replace(/ /g, '').split(",")[0].length).toUpperCase();
-                if(aAMorPM === "PM"){
-                    if(tEndHourFora !== 12){
-                        tEndHourFora += 12;
+        var k = 0;
+        var m = -1;
+        var maxCount = 0;
+        for(var k = 0; k < aEvent.length; ++k){
+            check = false;
+       
+            for(var i = 0; i < aEvent.length; ++i){
+                var current = this.calculatePreference(aEvent[i], false);
+                if(iMaxPreference === current && check == false && m < i){
+                    j = i;
+                    m = i;
+                    aEvent = this.toggleConflicts(aEvent, i);
+                    check = true;
+                }
+                if(check === true && i+1 < aEvent.length){
+                    var a = aEvent[j].Time;
+                    var tEndHourFora = parseInt(a.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, a.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[0]);
+                    var tEndMinutesFora = parseInt(a.replace(/ /g, '').split(",")[0].split("-")[1].substr(0, a.replace(/ /g, '').split(",")[0].split("-")[1].length-2).split(":")[1]);
+                    var aAMorPM = a.replace(/ /g, '').split(",")[0].substr(a.replace(/ /g, '').split(",")[0].length-2 , a.replace(/ /g, '').split(",")[0].length).toUpperCase();
+                    if(aAMorPM === "PM"){
+                        if(tEndHourFora !== 12){
+                            tEndHourFora += 12;
+                        }
                     }
-                }
 
-                var b = aEvent[i+1].Time;
-                var tStartHourForb = parseInt(b.replace(/ /g, '').split(",")[0].split("-")[0].substr(0, b.replace(/ /g, '').split(",")[0].split("-")[1].length-1).split(":")[0]);
-                var tStartMinutesForb = parseInt(b.replace(/ /g, '').split(",")[0].split("-")[0].substr(0, b.replace(/ /g, '').split(",")[0].split("-")[1].length-1).split(":")[1]);
-                var bAMorPM = b.replace(/ /g, '').split(",")[0].split("-")[0].substr(b.replace(/ /g, '').split(",")[0].split("-")[0].length-2, b.replace(/ /g, '').split(",")[0].split("-")[0].length).toUpperCase();
+                    var b = aEvent[i+1].Time;
+                    var tStartHourForb = parseInt(b.replace(/ /g, '').split(",")[0].split("-")[0].substr(0, b.replace(/ /g, '').split(",")[0].split("-")[1].length-1).split(":")[0]);
+                    var tStartMinutesForb = parseInt(b.replace(/ /g, '').split(",")[0].split("-")[0].substr(0, b.replace(/ /g, '').split(",")[0].split("-")[1].length-1).split(":")[1]);
+                    var bAMorPM = b.replace(/ /g, '').split(",")[0].split("-")[0].substr(b.replace(/ /g, '').split(",")[0].split("-")[0].length-2, b.replace(/ /g, '').split(",")[0].split("-")[0].length).toUpperCase();
 
-                if(bAMorPM === "PM"){
-                    if(tStartHourForb !== 12){
-                        tStartHourForb += 12;
+                    if(bAMorPM === "PM"){
+                        if(tStartHourForb !== 12){
+                            tStartHourForb += 12;
+                        }
                     }
-                }
-                if(tEndHourFora > tStartHourForb || (tEndHourFora === tStartHourForb && tEndMinutesFora > tStartMinutesForb)){
-                    aEvent[i+1].Conflicting = 1;
-                    
+                    if(tEndHourFora > tStartHourForb || (tEndHourFora === tStartHourForb && tEndMinutesFora > tStartMinutesForb)){
+                        aEvent[i+1].Conflicting = 1;
 
-                } else {
-                    j = i+1;
-                }
 
+                    } else {
+                        j = i+1;
+                        aEvent[i+1].Conflicting = 0;
+                    }
+
+                }
             }
+            if(maxCount < this.getTotalNumberOfNonConflictingInterviews(aEvent)){
+                mainEvent = JSON.parse(JSON.stringify(aEvent));
+                maxCount = this.getTotalNumberOfNonConflictingInterviews(aEvent);
+            }
+            //this.resetConflicts();
+            //aEvent = this.selectedEvent;
         }
         bValue = true;
     } else {
         bValue = false;
-        aEvent = this.sortItems(aEvent);
+        mainEvent = this.sortItems(aEvent);
     }
     
-    this.selectedEvent = this.getUpdatedDistanceMatrix(aEvent, bValue);
+    this.selectedEvent = this.getUpdatedDistanceMatrix(mainEvent, bValue);
     
     
   }
@@ -732,6 +758,7 @@ export class HomePage {
                 aEvent[i-1].Conflicting = 1;
                 
         } else {
+            aEvent[i-1].Conflicting = 0;
             j = i-1;
         }
         

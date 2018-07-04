@@ -81,18 +81,7 @@
                <h2>{{se.Title}}</h2>
                <h3>{{se.Message}}</h3>
               </ion-col>
-              <ion-col style="text-align: right;">
-                  <p>
-                      {{se.Rating}}
-                  </p>
-                
-              </ion-col>
-               <ion-col style="text-align: right;">
-                  <p>
-                      {{se.Time}}
-                  </p>
-                
-              </ion-col>
+              
              
               
               <ion-col style="text-align: right;">
@@ -119,18 +108,7 @@
                <h2>{{se.Title}}</h2>
                <h3>{{se.Message}}</h3>
               </ion-col>
-              <ion-col style="text-align: right;">
-                  <p>
-                      {{se.Rating}}
-                  </p>
-                
-              </ion-col>
-              <ion-col style="text-align: right;">
-                  <p>
-                      {{se.Time}}
-                  </p>
-                
-              </ion-col>
+             
               
               <ion-col style="text-align: right;">
                   <p>
@@ -144,6 +122,20 @@
                     {{se.Salary}}</p>
               </ion-col>
            </ion-row>
+           <ion-row *ngIf="true">
+                <ion-col style="text-align: right;">
+                  <p>
+                      {{se.Rating}}
+                  </p>
+                
+              </ion-col>
+               <ion-col style="text-align: right;">
+                  <p>
+                      {{se.Time}}
+                  </p>
+                
+              </ion-col>
+            </ion-row>
         </ion-grid>
 
 
